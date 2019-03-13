@@ -1,9 +1,56 @@
-- отправить корректный запрос
-- проверяем параметр key:
-	- несуществующие ключи
-	- другие форматы данных
-	- пустой ключ
-	- не передавать ключ
+- отправить запрос на поиск бара вокруг координаты в заданном радиусе и с АПИ-ключом валидного формата, присутствующим в БД:
+$ curl 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=55.1568242,61.3809425&radius=100&type=bar&key=AIzaSyCWOSz0D-dfNnfv7FJh6pP3dghHM9NmyuQ' | jq '. | {results: .results} | .[] | .[] | {name: .name}'
+
+Ожидаемый результат:
+в JSON ответа должен присутствовать ключ "name", который содержит значение "Craft House".
+{
+    "name": "Craft House"
+}
+
+
+- параметр key:
+	- отправить запрос на поиск бара вокруг координаты в заданном радиусе и с АПИ-ключом валидного формата, но отсутствующим в БД:
+    $ curl 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=55.1568242,61.3809425&radius=100&type=bar&key=AIzaSyCWOSz0D-dfNnfv7FJh6pP3dghHM9Nmyuw' | jq '. | {error_message: .error_message, results: .results, status: .status}'
+    Ожидаемый результат:
+    в JSON ответа должны присутствовать:
+    ключ "error_message", который содержит значение "The provided API key is invalid.";
+    ключ "results", который содержит пустой массив;
+    ключ "status", который содержит значение "REQUEST_DENIED".
+    {
+        "error_message": "The provided API key is invalid.",
+        "results": [],
+        "status": "REQUEST_DENIED"
+    }
+
+
+	- отправить запрос на поиск бара вокруг координаты в заданном радиусе и с пустым АПИ-ключом:
+	$ curl 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=55.1568242,61.3809425&radius=100&type=bar&key=' | jq '. | {error_message: .error_message, results: .results, status: .status}'
+	Ожидаемый результат:
+	в JSON ответа должны присутствовать:
+    ключ "error_message", который содержит значение "You must use an API key to authenticate each request to Google Maps Platform APIs. For additional information, please refer to http://g.co/dev/maps-no-account";
+    ключ "results", который содержит пустой массив;
+    ключ "status", который содержит значение "REQUEST_DENIED".
+    {
+        "error_message": "You must use an API key to authenticate each request to Google Maps Platform APIs. For additional information, please refer to http://g.co/dev/maps-no-account",
+        "results": [],
+        "status": "REQUEST_DENIED"
+    }
+
+
+	- отправить запрос на поиск бара вокруг координаты в заданном радиусе, не передавая параметр АПИ-ключ вообще:
+	$ curl 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=55.1568242,61.3809425&radius=100&type=bar&' | jq '. | {error_message: .error_message, results: .results, status: .status}'
+	Ожидаемый результат:
+	в JSON ответа должны присутствовать:
+    ключ "error_message", который содержит значение "You must use an API key to authenticate each request to Google Maps Platform APIs. For additional information, please refer to http://g.co/dev/maps-no-account";
+    ключ "results", который содержит пустой массив;
+    ключ "status", который содержит значение "REQUEST_DENIED".
+    {
+        "error_message": "You must use an API key to authenticate each request to Google Maps Platform APIs. For additional information, please refer to http://g.co/dev/maps-no-account",
+        "results": [],
+        "status": "REQUEST_DENIED"
+    }
+
+
 - параметр location:
 	- одно значение
 	- несуществующие значения

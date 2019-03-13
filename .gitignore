@@ -106,5 +106,6 @@ venv.bak/
 # ide
 .idea/
 
-# pytest cache
+# pytest cache and reports
 .pytest_cache/
+html_reports/
