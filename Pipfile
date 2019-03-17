@@ -9,6 +9,7 @@ verify_ssl = true
 pytest = "*"
 requests = "*"
 pytest-html = "*"
+flake8 = "*"
 
 [requires]
 python_version = "3.7"
