@@ -4,8 +4,8 @@ nearby_search_url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/jso
 
 
 def nearby_search(test_data):
-    params = {}
-    for p, v in test_data.items():  # из указанных в тесте параметров создаем словарь с параметрами, чтобы передать в запрос
+    params = {}  # из указанных в тесте параметров создаем словарь с параметрами, чтобы передать в запрос
+    for p, v in test_data.items():
         if v is not None:
             params.update({p: v})
     r = requests.get(url=nearby_search_url, params=params)
